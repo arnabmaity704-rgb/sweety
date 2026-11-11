@@ -70,7 +70,13 @@ Edit `DATABASE_URL` in `server/.env` if your PostgreSQL user, password or port a
 **Option A: local PostgreSQL**
 
 ```bash
-createdb sweety            # or in psql: CREATE DATABASE sweety;
+createdb -U postgres sweety            # or in psql: CREATE DATABASE sweety;
+```
+
+On Windows, `createdb` usually isn't on the PATH. Call it by its full path from PowerShell:
+
+```powershell
+& "C:\Program Files\PostgreSQL\18\bin\createdb.exe" -U postgres sweety   # adjust 18 to your version
 ```
 
 **Option B: Docker**
