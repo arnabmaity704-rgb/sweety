@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { api } from '../api/client.js';
 import ReadingForm from '../components/ReadingForm.jsx';
 import ValueBadge from '../components/ValueBadge.jsx';
@@ -14,6 +14,15 @@ export default function Readings() {
   const [error, setError] = useState('');
   const [notice, setNotice] = useState('');
   const [editing, setEditing] = useState(null);
+  const formRef = useRef(null);
+
+  // The form sits at the top of the page: bring it into view when editing starts,
+  // otherwise clicking Edit far down the list looks like nothing happened.
+  useEffect(() => {
+    if (!editing || !formRef.current) return;
+    formRef.current.scrollIntoView?.({ behavior: 'smooth', block: 'start' });
+    formRef.current.querySelector('input[type="number"]')?.focus({ preventScroll: true });
+  }, [editing]);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -69,11 +78,13 @@ export default function Readings() {
 
   return (
     <div className="stack">
-      {editing ? (
-        <ReadingForm key={editing.id} initial={editing} onSubmit={handleUpdate} onCancel={() => setEditing(null)} />
-      ) : (
-        <ReadingForm key="new" onSubmit={handleCreate} />
-      )}
+      <div ref={formRef} className={editing ? 'editing' : undefined}>
+        {editing ? (
+          <ReadingForm key={editing.id} initial={editing} onSubmit={handleUpdate} onCancel={() => setEditing(null)} />
+        ) : (
+          <ReadingForm key="new" onSubmit={handleCreate} />
+        )}
+      </div>
 
       {notice && (
         <div className="alert alert-success" role="status">

@@ -229,6 +229,10 @@ td.actions .btn + .btn {
 .row-active {
   background: #eff6ff;
 }
+.editing .card {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px #dbeafe;
+}
 
 .pagination {
   display: flex;
